@@ -8,21 +8,21 @@ from odoo import api, fields, models
 class CrmLead(models.Model):
     _inherit = "crm.lead"
 
-    website = fields.Char()
+    pet_weight = fields.Float("Peso de la mascota")
 
     @api.model
     def _lead_create_contact(self, name, is_company, parent_id=False):
         """Add trade name to partner."""
         return (super(CrmLead,
-                      self.with_context(default_website=self.website)
+                      self.with_context(default_pet_weight=self.pet_weight)
                       )._lead_create_contact(name, is_company, parent_id))
 
     @api.multi
     def _onchange_partner_id_values(self, partner_id):
-        """Recover website from partner if available."""
+        """Recover pet_weight from partner if available."""
         result = super(CrmLead, self)._onchange_partner_id_values(partner_id)
         if partner_id:
             partner = self.env["res.partner"].browse(partner_id)
-            if partner.website:
-                result.update({"website": partner.website})
+            if partner.pet_weight:
+                result.update({"pet_weight": partner.pet_weight})
         return result
